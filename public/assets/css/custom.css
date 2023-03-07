@@ -1,0 +1,36 @@
+.radius-20{
+    border-radius: 20px;
+}
+
+.radius-top-20{
+    border-radius: 20px 20px 0px 0px!important;
+}
+
+.master-data {
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+.master-data:hover {
+     box-shadow: 0px 0px 33px -14px rgba(0,0,0,0.75);
+     -webkit-box-shadow: 0px 0px 33px -14px rgba(0,0,0,0.75);
+     -moz-box-shadow: 0px 0px 33px -14px rgba(0,0,0,0.75);
+     /* border-left: 4px solid #3461FF; */
+}
+
+.style--radius15{
+ border-radius: 15px;
+}
+
+.bg-deco{
+    background-color: #1A2232;
+}
+
+.bg-head-up{
+    background-image: linear-gradient(to right, #141E30 0%, #243B55 100%);
+    background-repeat: repeat-x;
+}
+
+p.card-text{
+    font-size: 10px;
+}
