@@ -28,6 +28,31 @@
 {{-- Select2 js --}}
 <script src="{{ asset('assets/js/select2.min.js') }}"></script>
 <script>
+
+    //add row
+    function addRow(){
+        var row = 1;
+        $('#add-row').click(function(){
+            row++;
+            $('#cash-request-detail-table tbody').append('<tr>'+
+                '<td>'+row+'</td>'+
+                '<td><input type="text" class="form-control description" name="description[]"></td>'+
+                '<td><input type="text" class="form-control unit" name="unit[]"></td>'+
+                '<td><input type="number" class="form-control qty" name="qty[]"></td>'+
+                '<td><input type="number" class="form-control amount" name="amount[]"></td>'+
+                '<td><input type="number" class="form-control total" name="total[]"></td>'+
+                '<td><button class="btn btn-remove-row btn-danger mx-1" onclick="deleteRow()" id="delete"><i class="fas fa-trash"></i></button></td>'+
+                '</tr>');
+        });
+    }
+
+    function deleteRow(){
+        $('.btn-remove-row').click(function(){
+            $(this).closest('tr').remove();
+        });
+    }
+
+
     // Delete Function
     function modalDelete(title, name, url, redirect_link) {
         $.confirm({

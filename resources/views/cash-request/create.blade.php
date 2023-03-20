@@ -4,16 +4,17 @@
 @endpush
 
 @section('container')
+
 {{-- CASH REQUEST --}}
-<div class="row">
-    <div class="col-lg-6 col-md-12 col-sm-12">
-        @include('components.alert-message')
-        <div class="card">
-            <form action="{{ route('cash-request.store') }}" method="post">
-                @csrf
+<form action="{{ route('cash-request.store') }}" method="post" enctype="multipart/form-data">
+    @csrf
+    <div class="row">
+        <div class="col-lg-6 col-md-12 col-sm-12">
+            @include('components.alert-message')
+            <div class="card">
                 <div class="card-header">
                     <h4 class="fw-bold">
-                        <i class="fas fa-building"></i> Create Cash Request
+                        <i class="fas fa-calendar-alt"></i> Create Cash Request
                     </h4>
                 </div>
                 <div class="card-body">
@@ -37,114 +38,105 @@
                         @enderror
                     </div>
                 </div>
-                {{-- <div class="card-footer">
-                    <a href="{{ route('cash-request.index') }}" class="btn btn-secondary"> <i class="fas fa-arrow-left"></i> Back</a>
-                    <button class="btn btn-success"><i class="fas fa-save"></i> Save</button>
-                </div> --}}
-            </form>
+            </div>
         </div>
     </div>
-</div>
 
-{{-- CASH REQUEST DETAIL --}}
-<div class="row">
-    <div class="col-lg-6 col-md-12 col-sm-12">
-        @include('components.alert-message')
-        <div class="card">
-            <form action="{{ route('cash-request.store') }}" method="post">
-                @csrf
+    {{-- CASH REQUEST DETAIL --}}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex">
+                        <div class="me-auto p-2 bd-highlight">
+                            <h4 class="fw-bold">
+                                Details
+                            </h4>
+                        </div>
+                        <div class="p-2 bd-highlight">
+                            <div class="btn btn-primary" id="add-row" onclick="">+ New Detail</div>
+                        </div>
+                    </div>
+                </div>
                 <div class="card-body">
-                    <div class="form-group mb-3">
-                        <label for="" class="form-label">Description</label>
-                        <input type="text" name="description" id="" class="form-control @error('description') is-invalid @enderror"placeholder="Input Description" value="{{ old('username') }}">
-                        @error('description')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="" class="form-label">Qty</label>
-                        <input type="number" name="qty" id="" class="form-control @error('qty') is-invalid @enderror"placeholder="Input Qty" value="{{ old('username') }}">
-                        @error('qty')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="" class="form-label">Unit</label>
-                        <input type="text" name="unit" id="" class="form-control @error('unit') is-invalid @enderror"placeholder="Input Unit" value="{{ old('username') }}">
-                        @error('unit')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="" class="form-label">Amount</label>
-                        <input type="number" name="amount" id="" class="form-control @error('amount') is-invalid @enderror"placeholder="Input Amount" value="{{ old('username') }}">
-                        @error('amount')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-                <div class="card-footer">
-                    <a href="{{ route('cash-request.index') }}" class="btn btn-secondary"> <i class="fas fa-arrow-left"></i> Back</a>
-                    <button class="btn btn-success"><i class="fas fa-save"></i> Save</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-12">
-        @include('components.alert-message')
-        <div class="card">
-            <div class="card-header">
-                <div class="d-flex">
-                    <div class="me-auto p-2 bd-highlight">
-                        <h4 class="fw-bold">
-                            <i class="fas fa-users"></i> Page Title
-                        </h4>
-                    </div>
-                    <div class="p-2 bd-highlight">
-                        <a href="{{ route('cash-request-detail.store') }}" class="btn btn-primary"><i class="fas fa-plus"></i> New Data</a>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table id="department" class="table table-striped table-borderless table-hovered" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Description</th>
-                                <th>Qty</th>
-                                <th>Unit</th>
-                                <th>Amount</th>
-                                <th>Total</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($cash_request_detail as $item)
+                    <div class="table-responsive">
+                        <table id="cash-request-detail-table" class="table table-striped table-borderless table-hovered" style="width:100%">
+                            <thead>
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $item->description }}</td>
-                                    <td>{{ $item->qty }}</td>
-                                    <td>{{ $item->unit }}</td>
-                                    <td>{{ $item->amount }}</td>
-                                    <td>{{ $item->total }}</td>
-                                    <td>
-                                        <a href="{{ route('cash-request.edit', $item->id) }}" class="btn btn-warning" title="Edit Cash Request"><i class="fas fa-edit"></i></a>
-                                        <button class="btn btn-danger mx-1" onclick="modalDelete('Cash Request Detail', 'Cash Request Detail {{ $item->name }}', '{{ route('cash-request.destroy', $item->id) }}', '{{ route('cash-request.index') }}')" title="Delete Cash Request"><i class="fas fa-trash"></i></button>
-                                    </td>
+                                    <th>No</th>
+                                    <th>Description</th>
+                                    <th>Unit</th>
+                                    <th>Qty</th>
+                                    <th>Amount</th>
+                                    <th>Total</th>
+                                    <th>Action</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td><input type="text" class="form-control description" name="description[]"></td>
+                                    <td><input type="text" class="form-control unit" name="unit[]"></td>
+                                    <td><input type="number" class="form-control qty" name="qty[]"></td>
+                                    <td><input type="number" class="form-control amount" name="amount[]"></td>
+                                    <td><input type="number" class="form-control total" name="total[]" readonly></td>
+                                    <td><button class="btn btn-danger mx-1 btn-remove-row" onclick="deleteRow()" id="delete"><i class="fas fa-trash"></i></button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <a href="{{ route('cash-request.index') }}" class="btn btn-secondary"> <i class="fas fa-arrow-left"></i> Back</a>
+                            <button type="submit" class="btn btn-success" id="save-data">Save Details</button>
+                    </div>
                 </div>
-            </div>
+        </div>
         </div>
     </div>
-</div>
+</form>
 @endsection
 
+
+
 @push('scripts')
+<script>
+    $(document).ready(function(){
+        var jumlahBaris = $('#cash-request-detail-table tbody tr').length;
+        $('#cash-request-detail-table').val(jumlahBaris + 1);
+        // var row = 1;
+        $('#add-row').click(function(){
+            jumlahBaris++;
+            $('#cash-request-detail-table tbody').append('<tr>'+
+                '<td>'+jumlahBaris+'</td>'+
+                '<td><input type="text" class="form-control description" name="description[]"></td>'+
+                '<td><input type="text" class="form-control unit" name="unit[]"></td>'+
+                '<td><input type="number" class="form-control qty" name="qty[]"></td>'+
+                '<td><input type="number" class="form-control amount" name="amount[]"></td>'+
+                '<td><input type="number" class="form-control total" name="total[]" readonly></td>'+
+                '<td><button class="btn btn-remove-row btn-danger mx-1" onclick="deleteRow()" id="delete"><i class="fas fa-trash"></i></button></td>'+
+                '</tr>');
+                $('#cash-request-detail-table').val(jumlahBaris + 1);
+        });
+
+        $(document).on('click', '.btn-remove-row', function() {
+            $(this).closest('tr').remove();
+        });
+
+        $('body').on('input', '.qty, .amount', function(){
+            // ambil nilai qty dan amount
+            var qty = $(this).closest('tr').find('.qty').val();
+            var amount = $(this).closest('tr').find('.amount').val();
+            
+            // hitung total
+            var total = qty * amount;
+            
+            var harga = total.toLocaleString('id-ID');
+            $(this).closest('tr').find('.total').val(harga);
+        });
+
+    });
+
+    
+</script>
 @endpush
+
+
+

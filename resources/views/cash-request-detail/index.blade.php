@@ -15,12 +15,13 @@
                 <div class="card-body">
                     <div class="form-group mb-3">
                         <label for="" class="form-label">Cash Request</label>
-                        <select name="cash_request_id" id="">
+                        <select name="cash_request_id" class="form-select @error('cash_request') @enderror">
+                            <option selected disabled>-- Select Cash Request --</option>
                             @foreach ($cash_request as $item)
-                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                <option value="{{ $item->id }}" {{ old('cash_request') == $item->id ? 'selected' : '' }}>{{ $item->id }}</option>
                             @endforeach
                         </select>
-                        @error('description')
+                        @error('cash_request')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
@@ -82,8 +83,8 @@
                             <tr>
                                 <th>No</th>
                                 <th>Description</th>
-                                <th>Qty</th>
                                 <th>Unit</th>
+                                <th>Qty</th>
                                 <th>Amount</th>
                                 <th>Total</th>
                                 <th>Action</th>
@@ -94,12 +95,13 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $item->description }}</td>
-                                    <td>{{ $item->qty }}</td>
                                     <td>{{ $item->unit }}</td>
-                                    <td>{{ $item->amount }}</td>
-                                    <td>{{ $item->total }}</td>
+                                    <td>{{ $item->qty }}</td>
+                                    <td>Rp. {{ number_format($item->amount) }}</td>
+                                    <td>Rp. {{ number_format($item->total) }}</td>
                                     <td>
-                                        <a href="{{ route('cash-request.edit', $item->id) }}" class="btn btn-warning" title="Edit Cash Request"><i class="fas fa-edit"></i></a>
+                                        {{-- Rp {{ number_format($row->price * $row->qty) }} --}}
+                                        <a href="{{ route('cash-request-detail.edit', $item->id) }}" class="btn btn-warning" title="Edit Cash Request"><i class="fas fa-edit"></i></a>
                                         <button class="btn btn-danger mx-1" onclick="modalDelete('Cash Request Detail', 'Cash Request Detail {{ $item->name }}', '{{ route('cash-request.destroy', $item->id) }}', '{{ route('cash-request.index') }}')" title="Delete Cash Request"><i class="fas fa-trash"></i></button>
                                     </td>
                                 </tr>
@@ -111,6 +113,20 @@
         </div>
     </div>
 </div>
+
+<div class="d-flex flex-row-reverse">
+    <div class="col-lg-6 col-md-12 col-sm-12">
+        <h5>Total amount:</h5>
+        <div class="card bg-dark rounded-end">
+            <div class="card-body ">
+                <h1 class="text-center text-light">Rp. {{ number_format($cash_request_detail->reduce(function ($total, $item) {
+                    return $total + ($item->qty * $item->amount);
+                }, 0)) }}</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')

@@ -15,15 +15,15 @@ return new class extends Migration
     {
         Schema::create('cash_request', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('project_id')->nullable();
-            $table->unsignedBigInteger('request_by')->nullable();
+            $table->integer('project_id')->nullable();
+            $table->integer('request_by')->nullable();
             $table->date('date');
             $table->integer('approved_by')->nullable(); //nullable
             $table->string('status')->nullable(); //nullable
             $table->timestamps();
 
-            $table->foreign('project_id')->references('id')->on('projects');
-            $table->foreign('request_by')->references('id')->on('users');
+            // $table->foreign('project_id')->references('id')->on('projects');
+            // $table->foreign('request_by')->references('id')->on('users');
         });
     }
 
