@@ -11,55 +11,61 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use SebastianBergmann\CodeCoverage\Report\Xml\Project;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Traits\HasRoles;
 
 class CashRequestController extends Controller
 {
-    public function index(){
+    use HasRoles;
+
+    public function index()
+    {
         $cashrequest = CashRequest::all();
         $data['cash_request'] = $cashrequest;
-        // $project = CashRequest::with('project_id');
-        // $data['user'] = User::get();
-        $item = CashRequest::with('project');
+
         return view('cash-request.index', $data);
     }
 
-    public function create(){
+
+    public function create()
+    {
         $data['page_title'] = 'Create Cash Request';
         $data['cash_request'] = CashRequest::get();
         $data['cash_request_detail'] = CashRequestDetail::all();
-        $project = Projects::all();
-        // $user = User::all();
-        // $dt = CashRequest::with('user', 'project');
-        return view('cash-request.create', compact('project'), $data);
+        $data['project'] = Projects::all();
+        
+        return view('cash-request.create', $data);
     }
 
 
-    public function store(Request $request){
-        // dd($request->all());
-        try{
-             //input cash request
-            $validatedData = $request->validate([
-                'description' => 'required',
-                'unit' => 'required',
-                'qty' => 'required',
-                'amount' => 'required',
-                'total' => 'required',
-            ], [
-                'description.*' => 'required|string',
-                'unit.*' => 'required|string',
-                'qty.*' => 'required|numeric|min:1',
-                'amount.*' => 'required|numeric|min:1',
-                'total.*' => 'required|numeric|min:1',
-            ]);
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'date' => 'required',
+            'project_id' => 'required',
+            'description' => 'required',
+            'unit' => 'required',
+            'qty' => 'required',
+            'amount' => 'required',
+            'total' => 'required',
+        ], [
+            'description.*' => 'required|string',
+            'unit.*' => 'required|string',
+            'qty.*' => 'required|numeric|min:1',
+            'amount.*' => 'required|numeric|min:1',
+            'total.*' => 'required|numeric|min:1',
+        ]);
 
+        try{
             $cashRequest = new CashRequest();
 
             $cashRequest->request_by = Auth::user()->id;
             $cashRequest->project_id = $request->project_id;
             $cashRequest->date = $request->date;
             $cashRequest->status = 'Pending';
+            $cashRequest->approved_by = $request->approved_by;
             $cashRequest->save();
-        
+
             $description = $validatedData['description'];
             $unit = $validatedData['unit'];
             $qty = $validatedData['qty'];
@@ -81,36 +87,36 @@ class CashRequestController extends Controller
             return redirect()->route('cash-request.index')->with('failed', $th->getMessage());
         }
     }
-    
+
 
     public function edit($id)
     {
         $data['page_title'] = 'Update Cash Request';
         $data['cash_request'] = CashRequest::findOrFail($id);
-        // $data['cash_request_detail'] = CashRequestDetail::all();
         $data['cash_request_detail'] = CashRequestDetail::where('cash_request_id', $id)->get();
-        $project = Projects::all();
-        return view('cash-request.edit', compact('project'),$data);
+        $data['project'] = Projects::all();
+
+        return view('cash-request.edit', $data);
     }
     
 
-    public function update(Request $request, $id){
+    public function update(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'description' => 'required',
+            'unit' => 'required',
+            'qty' => 'required',
+            'amount' => 'required',
+            'total' => 'required',
+        ], [
+            'description.*' => 'required|string',
+            'unit.*' => 'required|string',
+            'qty.*' => 'required|numeric|min:1',
+            'amount.*' => 'required|numeric|min:1',
+            'total.*' => 'required|numeric|min:1',
+        ]);
+
         try {
-            //input cash request
-            $validatedData = $request->validate([
-                'description' => 'required',
-                'unit' => 'required',
-                'qty' => 'required',
-                'amount' => 'required',
-                'total' => 'required',
-            ], [
-                'description.*' => 'required|string',
-                'unit.*' => 'required|string',
-                'qty.*' => 'required|numeric|min:1',
-                'amount.*' => 'required|numeric|min:1',
-                'total.*' => 'required|numeric|min:1',
-            ]);
-        
             $cashRequest = CashRequest::findOrFail($id);
             
             $date = date('Y-m-d', strtotime($request->date));
@@ -118,7 +124,6 @@ class CashRequestController extends Controller
             $cashRequest->project_id = $request->project_id;
             $cashRequest->save();
     
-            // Get existing details for this cash request
             $existingDetails = CashRequestDetail::where('cash_request_id', $id)->get();
     
             $description = $validatedData['description'];
@@ -127,7 +132,6 @@ class CashRequestController extends Controller
             $amount = $validatedData['amount'];
             $total = $validatedData['total'];
     
-            // Loop through the detail data
             for ($i = 0; $i < count($amount); $i++) {
                 // Find the existing detail or create a new one
                 $cashRequestDetail = CashRequestDetail::find($request->input('detail_id.'.$i)) ?? new CashRequestDetail;
@@ -189,13 +193,78 @@ class CashRequestController extends Controller
         }
     }
 
-    public function show($id){
+
+    public function show($id)
+    {
         $data['page_title'] = 'Show Cash Request';
         $data['cash_request'] = CashRequest::findOrFail($id);
-        // $data['cash_request_detail'] = CashRequestDetail::all();
         $data['cash_request_detail'] = CashRequestDetail::where('cash_request_id', $id)->get();
-        $project = Projects::all();
-        return view('cash-request.show', compact('project'),$data);
+        $data['project'] = Projects::all();
+
+        return view('cash-request.show', $data);
+    }
+
+
+    public function approve(Request $request, $id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $cashRequest = CashRequest::findOrFail($id);
+            $cashRequest->approved_by = Auth::user()->id;
+            $cashRequest->status = 'Approved';
+            $cashRequest->save();
+
+            DB::commit();
+
+            Session::flash('success', 'Cash Request Successfully Approved!');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Cash Request successfully approved',
+            ], 200);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            Session::flash('failed', $th->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage(),
+            ], 200);
+        }
+    }
+    
+    
+    public function reject(Request $request, $id)
+    {
+        DB::beginTransaction();
+    
+        try {
+            $cashRequest = CashRequest::findOrFail($id);
+            $cashRequest->approved_by = Auth::user()->id;
+            $cashRequest->status = 'Rejected';
+            $cashRequest->reasons = $request->reasons;
+            $cashRequest->save();
+    
+            DB::commit();
+
+            Session::flash('success', 'Cash Request Successfully Rejected!');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Cash Request successfully rejected',
+            ], 200);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            Session::flash('failed', $th->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage(),
+            ], 200);
+        }
     }
     
 

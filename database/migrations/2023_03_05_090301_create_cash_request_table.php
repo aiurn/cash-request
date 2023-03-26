@@ -20,6 +20,7 @@ return new class extends Migration
             $table->date('date');
             $table->integer('approved_by')->nullable(); //nullable
             $table->string('status')->nullable(); //nullable
+            $table->text('reasons')->nullable();
             $table->timestamps();
 
             // $table->foreign('project_id')->references('id')->on('projects');

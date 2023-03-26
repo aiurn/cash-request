@@ -49,14 +49,8 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/cash-request/update/{id}', [CashRequestController::class, 'update'])->name('cash-request.update');
     Route::delete('/destroy/{id}', [CashRequestController::class, 'destroy'])->name('cash-request.destroy');
     Route::get('/cash-request/show/{id}', [CashRequestController::class, 'show'])->name('cash-request.show');
-
-    //cash request detail
-    // Route::get('/cash-request-detail/create', [CashRequestDetailController::class, 'index'])->name('cash-request-detail.index');
-    // Route::get('/cash-request-detail', [CashRequestDetailController::class, 'index'])->name('cash-request-detail.index');
-    // Route::post('/cash-request-detail/store', [CashRequestDetailController::class, 'store'])->name('cash-request-detail.store');
-    // Route::get('/cash-request-detail/edit/{id}', [CashRequestDetailController::class, 'edit'])->name('cash-request-detail.edit');
-    // Route::post('/cash-request-detail/update/{id}', [CashRequestDetailController::class, 'update'])->name('cash-request-detail.update');
-    // Route::get('/cash-request-detail/destroy{id}', [CashRequestDetailController::class, 'destroy'])->name('cash-request-detail.destroy');
+    Route::post('/cash-request/approve/{id}', [CashRequestController::class, 'approve'])->name('cash-request.approve');
+    Route::post('/cash-request/reject/{id}', [CashRequestController::class, 'reject'])->name('cash-request.reject');
 
     Route::prefix('settings')->name('settings.')->group(function () {
         Route::resource('department', DepartmentController::class);

@@ -27,30 +27,32 @@
 <script src="{{ asset('assets/js/custom.js') }}"></script>
 {{-- Select2 js --}}
 <script src="{{ asset('assets/js/select2.min.js') }}"></script>
+{{-- Swall js --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 
     //add row
-    function addRow(){
-        var row = 1;
-        $('#add-row').click(function(){
-            row++;
-            $('#cash-request-detail-table tbody').append('<tr>'+
-                '<td>'+row+'</td>'+
-                '<td><input type="text" class="form-control description" name="description[]"></td>'+
-                '<td><input type="text" class="form-control unit" name="unit[]"></td>'+
-                '<td><input type="number" class="form-control qty" name="qty[]"></td>'+
-                '<td><input type="number" class="form-control amount" name="amount[]"></td>'+
-                '<td><input type="number" class="form-control total" name="total[]"></td>'+
-                '<td><button class="btn btn-remove-row btn-danger mx-1" onclick="deleteRow()" id="delete"><i class="fas fa-trash"></i></button></td>'+
-                '</tr>');
-        });
-    }
+    // function addRow(){
+    //     var row = 1;
+    //     $('#add-row').click(function(){
+    //         row++;
+    //         $('#cash-request-detail-table tbody').append('<tr>'+
+    //             '<td>'+row+'</td>'+
+    //             '<td><input type="text" class="form-control description" name="description[]"></td>'+
+    //             '<td><input type="text" class="form-control unit" name="unit[]"></td>'+
+    //             '<td><input type="number" class="form-control qty" name="qty[]"></td>'+
+    //             '<td><input type="number" class="form-control amount" name="amount[]"></td>'+
+    //             '<td><input type="number" class="form-control total" name="total[]"></td>'+
+    //             '<td><button class="btn btn-remove-row btn-danger mx-1" onclick="deleteRow()" id="delete"><i class="fas fa-trash"></i></button></td>'+
+    //             '</tr>');
+    //     });
+    // }
 
-    function deleteRow(){
-        $('.btn-remove-row').click(function(){
-            $(this).closest('tr').remove();
-        });
-    }
+    // function deleteRow(){
+    //     $('.btn-remove-row').click(function(){
+    //         $(this).closest('tr').remove();
+    //     });
+    // }
 
 
     // Delete Function
@@ -89,42 +91,90 @@
             }
         });
     }
-    // Logout function
-function logout() {
-    $.confirm({
-        icon: 'fa fa-sign-out',
-        title: 'Logout',
-        theme: 'supervan',
-        content: 'Are you sure want to logout?',
-        autoClose: 'cancel|8000',
-        buttons: {
-            logout: {
-                text: 'logout',
-                action: function () {
-                    $.ajax({
-                        type: 'POST',
-                        url: '/logout',
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        data: {
-                            "_token": "{{ csrf_token() }}"
-                        },
-                        success: function (data) {
-                            location.reload();
-                        },
-                        error: function (data) {
-                            $.alert('Logout Failed!');
-                        }
-                    });
-                }
-            },
-            cancel: function () {
+    
+    // Approve Cash Request
+    function approve(title, name, url, redirect_link) {
+        $.confirm({
+            title: `Approve ${title}?`,
+            content: `Are you sure want to approve ${name}`,
+            autoClose: 'cancel|8000',
+            buttons: {
+                approve: {
+                    text: 'approve',
+                    action: function () {
+                        $.ajax({
+                            type: 'POST',
+                            url: url,
+                            dataType: 'json',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            data: {
+                                // "_method": 'delete',
+                                "_token": "{{ csrf_token() }}"
+                            },
+                            success: function (data) {
+                                Swal.fire({
+                                icon: 'success',
+                                title: 'Cash Request Approved',
+                                showConfirmButton: false,
+                                timer: 1500
+                                })
+                                window.location.href = redirect_link
+                            },
+                            error: function (data) {
+                                $.alert('Failed!');
+                            }
+                        });
+                    }
+                },
+                cancel: function () {
 
+                }
             }
-        }
-    });
-}
+        });
+    }
+
+
+    
+    // Logout function
+    function logout() {
+        $.confirm({
+            icon: 'fa fa-sign-out',
+            title: 'Logout',
+            theme: 'supervan',
+            content: 'Are you sure want to logout?',
+            autoClose: 'cancel|8000',
+            buttons: {
+                logout: {
+                    text: 'logout',
+                    action: function () {
+                        $.ajax({
+                            type: 'POST',
+                            url: '/logout',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            data: {
+                                "_token": "{{ csrf_token() }}"
+                            },
+                            success: function (data) {
+                                location.reload();
+                            },
+                            error: function (data) {
+                                $.alert('Logout Failed!');
+                            }
+                        });
+                    }
+                },
+                cancel: function () {
+
+                }
+            }
+        });
+    }
+
+
 
 </script>
 @stack('scripts')

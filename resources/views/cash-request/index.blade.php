@@ -15,9 +15,11 @@
                             <i class="fas fa-calendar-alt"></i> Cash Request
                         </h4>
                     </div>
-                    <div class="p-2 bd-highlight">
-                        <a href="{{ route('cash-request.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> New Data</a>
-                    </div>
+                    @can('cash-request-create')
+                        <div class="p-2 bd-highlight">
+                            <a href="{{ route('cash-request.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> New Data</a>
+                        </div>
+                    @endcan
                 </div>
             </div>
             <div class="card-body">
@@ -38,11 +40,29 @@
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td class="text-center">{{ $item->date }}</td>
                                     <td class="text-center">{{ optional($item->project)->name }}</td>
-                                    <td class="text-center"><span class="badge bg-warning text-dark">{{ $item->status }}</span></td>
+                                    @if ($item->status == 'Pending')
+                                        <td class="text-center"><span class="badge bg-warning text-dark">{{ $item->status }}</span></td>
+                                    @elseif($item->status == 'Approved')
+                                        <td class="text-center"><span class="badge bg-success text-light">{{ $item->status }}</span></td>
+                                    @else
+                                        <td class="text-center"><span class="badge bg-danger text-light">{{ $item->status }}</span></td>
+                                    @endif
                                     <td class="text-center">
-                                        <a href="{{ route('cash-request.show', $item->id) }}" class="btn btn-success" title="Show Cash Request"><i class="fas fa-eye"></i></a>
-                                        <a href="{{ route('cash-request.edit', $item->id) }}" class="btn btn-warning" title="Edit Cash Request"><i class="fas fa-edit"></i></a>
-                                        <button class="btn btn-danger mx-1" onclick="modalDelete('Cash Request', 'Cash Request {{ $item->name }}', '{{ route('cash-request.destroy', $item->id) }}', '{{ route('cash-request.index') }}')" title="Delete Cash Request"><i class="fas fa-trash"></i></button>
+                                        @can('cash-request-approve')
+                                            <a href="{{ route('cash-request.show', $item->id) }}" class="btn btn-success" title="Show Cash Request">
+                                                @if ($item->status == 'Pending')
+                                                <i class="fa-solid fa-thumbs-up"></i>
+                                                @else
+                                                <i class="fas fa-eye"></i>
+                                                @endif
+                                            </a>
+                                        @endcan
+                                        @can('cash-request-edit')
+                                            <a href="{{ route('cash-request.edit', $item->id) }}" class="btn btn-warning" title="Edit Cash Request"><i class="fas fa-edit"></i></a>
+                                        @endcan
+                                        @can('cash-request-delete')
+                                            <button class="btn btn-danger mx-1" onclick="modalDelete('Cash Request', 'Cash Request {{ $item->name }}', '{{ route('cash-request.destroy', $item->id) }}', '{{ route('cash-request.index') }}')" title="Delete Cash Request"><i class="fas fa-trash"></i></button>
+                                        @endcan
                                     </td>
                                 </tr>
                             @endforeach
