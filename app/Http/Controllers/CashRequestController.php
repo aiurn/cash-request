@@ -18,9 +18,23 @@ class CashRequestController extends Controller
 {
     use HasRoles;
 
+    public function __construct()
+    {
+        $this->middleware('permission:cash-request-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:cash-request-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:cash-request-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:cash-request-show', ['only' => ['show']]);
+        $this->middleware('permission:cash-request-approve', ['only' => ['approve', 'reject']]);
+    }
+
     public function index()
     {
-        $cashrequest = CashRequest::all();
+        if (Auth::user()->getRoleNames()[0] == 'Super Admin') {
+            $cashrequest = CashRequest::all();
+        } else {
+            $cashrequest = CashRequest::where('request_by', Auth::user()->id)->get();
+        }
+
         $data['cash_request'] = $cashrequest;
 
         return view('cash-request.index', $data);

@@ -48,7 +48,7 @@
                                         <td class="text-center"><span class="badge bg-danger text-light">{{ $item->status }}</span></td>
                                     @endif
                                     <td class="text-center">
-                                        @can('cash-request-approve')
+                                        {{-- @can('cash-request-approve') --}}
                                             <a href="{{ route('cash-request.show', $item->id) }}" class="btn btn-success" title="Show Cash Request">
                                                 @if ($item->status == 'Pending')
                                                 <i class="fa-solid fa-thumbs-up"></i>
@@ -56,7 +56,7 @@
                                                 <i class="fas fa-eye"></i>
                                                 @endif
                                             </a>
-                                        @endcan
+                                        {{-- @endcan --}}
                                         @can('cash-request-edit')
                                             <a href="{{ route('cash-request.edit', $item->id) }}" class="btn btn-warning" title="Edit Cash Request"><i class="fas fa-edit"></i></a>
                                         @endcan
