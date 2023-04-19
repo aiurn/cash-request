@@ -1,13 +1,16 @@
 <?php
 
-use App\Http\Controllers\DepartmentController;
-use App\Http\Controllers\CashRequestController;
-use App\Http\Controllers\CashRequestDetailController;
-use App\Http\Controllers\UserController;
 use App\Models\CashRequest;
+use App\Models\ChartOfAccounts;
 use App\Models\CashRequestDetail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\JournalController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\CashRequestController;
+use App\Http\Controllers\ChartOfAccountsController;
+use App\Http\Controllers\CashRequestDetailController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +22,6 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 
 Auth::routes([
     'register' => false,
@@ -63,6 +65,24 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('department', DepartmentController::class);
         Route::resource('user', UserController::class);
     });
-    
+
+    // Chart Of Accounts
+    Route::get('/chart-of-accounts', [ChartOfAccountsController::class, 'index'])->name('chart-of-accounts.index');
+    Route::get('/chart-of-accounts/create', [ChartOfAccountsController::class, 'create'])->name('chart-of-accounts.create');
+    Route::post('/chart-of-accounts/store', [ChartOfAccountsController::class, 'store'])->name('chart-of-accounts.store');
+    Route::get('/chart-of-accounts/edit/{id}', [ChartOfAccountsController::class, 'edit'])->name('chart-of-accounts.edit');
+    Route::patch('/chart-of-accounts/update/{id}', [ChartOfAccountsController::class, 'update'])->name('chart-of-accounts.update');
+    Route::delete('/chart-of-accounts/destroy/{id}', [ChartOfAccountsController::class, 'destroy'])->name('chart-of-accounts.destroy');
+
+    // Journal
+    Route::get('/journal', [JournalController::class, 'index'])->name('journal.index');
+    Route::get('/journal/create', [JournalController::class, 'create'])->name('journal.create');
+    Route::post('/journal/cancel', [JournalController::class, 'cancel'])->name('journal.cancel');
+    Route::post('/journal/simpan', [JournalController::class, 'simpan'])->name('journal.simpan');
+    Route::patch('/journal/update/{id}', [JournalController::class, 'update'])->name('journal.update');  
+    Route::get('/journal/edit/{id}', [JournalController::class, 'edit'])->name('journal.edit');
+    Route::patch('/journal/updatemodal/{id}', [JournalController::class, 'updatemodal'])->name('journal.updatemodal');
+    Route::patch('/journal/updatejournal/{id}', [JournalController::class, 'updatejournal'])->name('journal.updatejournal');
+    Route::delete('/journal/destroy/{id}', [JournalController::class, 'destroy'])->name('journal.destroy');
 });
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

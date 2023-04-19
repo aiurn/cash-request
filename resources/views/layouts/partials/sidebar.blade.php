@@ -45,6 +45,17 @@
                 <div class="menu-title">Cash Request</div>
             </a>
         </li>
+        <li>
+            <a class="has-arrow" href="javascript:;">
+              <div class="parent-icon"><i class="fadeIn animated bx bx-unite"></i>
+              </div>
+              <div class="menu-title">Finance</div>
+            </a>
+            <ul>
+                <li> <a href="/chart-of-accounts"><i class="fadeIn animated bx bx-window-alt"></i>Chart Of Accounts </a></li>
+                <li> <a href="/journal"><i class="lni lni-book"></i>Journal</a></li>
+            </ul>
+          </li>
         {{-- <li>
             <a href="#">
                 <div class="parent-icon"><i data-feather="trending-up"></i>

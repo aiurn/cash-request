@@ -123,7 +123,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($cash_request_detail as $item)
+                            @foreach ($cash_request as $item)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $item->description }}</td>
