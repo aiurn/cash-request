@@ -15,13 +15,15 @@ return new class extends Migration
     {
         Schema::create('cash_request_detail', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->foreignId('cash_request_id')->references('id')->on('cash_request');
+            $table->integer('cash_request_id')->nullable();
             $table->string('description');
-            $table->float('amount');
+            $table->float('amount',20,2);
             $table->integer('qty');
             $table->string('unit');
-            $table->float('total');
+            $table->float('total',20,2);
             $table->timestamps();
+
+            // $table->foreign('cash_request_id')->references('id')->on('cash_request');
         });
     }
 

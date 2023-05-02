@@ -4,7 +4,7 @@
             <img src="{{ asset('assets/images/dev-logo.png') }}" class="menu-logo" width="50" alt="logo icon">
         </div>
         <div>
-            <h4 class="logo-text text-secondary fw-bold" style="font-size: 18px;">Water Monitoring</h4>
+            <h4 class="logo-text text-secondary fw-bold" style="font-size: 18px;">Cash Request</h4>
         </div>
         <div class="toggle-icon ms-auto"><i class="bi bi-chevron-double-left text-secondary"></i>
         </div>
@@ -12,7 +12,7 @@
     <!--navigation-->
     <ul class="metismenu" id="menu">
         {{-- Divider --}}
-        <li class="menu-label metis-logo--hide">PLANT NAME</li>
+        {{-- <li class="menu-label metis-logo--hide">PLANT NAME</li> --}}
         <li class="metis-logo--hide">
             <img style="width:200px;" class="img-fluid metis-logo--hide" src='{{ asset('assets/images/logo_grootech2.png') }}' alt="">
         </li>
@@ -40,7 +40,7 @@
         </li>
         <li>
             <a href="/cash-request">
-                <div class="parent-icon"><i class="bx bx-cloud-download"></i>
+                <div class="parent-icon"><i class="far fa-calendar"></i>
                 </div>
                 <div class="menu-title">Cash Request</div>
             </a>

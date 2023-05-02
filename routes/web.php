@@ -3,7 +3,9 @@
 use App\Models\CashRequest;
 use App\Models\ChartOfAccounts;
 use App\Models\CashRequestDetail;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\JournalController;
@@ -48,18 +50,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/cash-request/edit/{id}', [CashRequestController::class, 'edit'])->name('cash-request.edit');
     Route::patch('/cash-request/update/{id}', [CashRequestController::class, 'update'])->name('cash-request.update');
     Route::delete('/destroy/{id}', [CashRequestController::class, 'destroy'])->name('cash-request.destroy');
-    
-    // Route::prefix('cash-request/create')->name('cash-request.')->group(function(){
-    //     Route::resource('cash-request-detail', CashRequestController::class);
-    // });
-
-    //cash request detail
-    // Route::get('/cash-request-detail/create', [CashRequestDetailController::class, 'index'])->name('cash-request-detail.index');
-    Route::get('/cash-request-detail', [CashRequestDetailController::class, 'index'])->name('cash-request-detail.index');
-    Route::post('/cash-request-detail/store', [CashRequestDetailController::class, 'store'])->name('cash-request-detail.store');
-    Route::get('/cash-request-detail/edit/{id}', [CashRequestDetailController::class, 'edit'])->name('cash-request-detail.edit');
-    Route::get('/cash-request-detail/update/{id}', [CashRequestDetailController::class, 'update'])->name('cash-request-detail.update');
-    Route::get('/cash-request-detail/destroy{id}', [CashRequestDetailController::class, 'destroy'])->name('cash-request-detail.destroy');
+    Route::get('/cash-request/show/{id}', [CashRequestController::class, 'show'])->name('cash-request.show');
+    Route::post('/cash-request/approve/{id}', [CashRequestController::class, 'approve'])->name('cash-request.approve');
+    Route::post('/cash-request/reject/{id}', [CashRequestController::class, 'reject'])->name('cash-request.reject');
 
     Route::prefix('settings')->name('settings.')->group(function () {
         Route::resource('department', DepartmentController::class);

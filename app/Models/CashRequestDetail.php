@@ -20,6 +20,7 @@ class CashRequestDetail extends Model
     ];
     protected $hiden;
 
+    
     public function cashrequest()
     {
         return $this->belongsTo('App\Models\CashRequest');

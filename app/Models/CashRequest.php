@@ -16,7 +16,8 @@ class CashRequest extends Model
         'project_id',
         'request_by', 
         'approved_by',
-        'status'
+        'status',
+        'reasons'
     ];
     protected $hiden;
 
